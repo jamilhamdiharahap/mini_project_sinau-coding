@@ -69,11 +69,11 @@
                             <td class="border md:p-2 p-1 border-slate-700">
                                 <div class="flex items-center justify-around">
                                     <button class="md:p-1 md:px-3 px-1 border border-red-500 rounded-sm"
-                                        @click="deleteDataSupplier(item.id)">
+                                        @click="`${supplierId = item.id}${show = !show}`">
                                         <IconDelete />
                                     </button>
                                     <router-link class="md:p-1 md:px-3 px-1 border border-yellow-500 rounded-sm"
-                                        to="/update-supplier">
+                                        :to="`/update-supplier/${item.id}`">
                                         <IconEdit />
                                     </router-link>
                                 </div>
@@ -81,6 +81,16 @@
                         </tr>
                     </tbody>
                 </table>
+                <div v-if="show"
+                    class="bg-slate-800 bg-opacity-50 flex justify-center items-center  fixed top-0 right-0 bottom-0 left-0">
+                    <div class="bg-white px-16 py-14 rounded-md text-center">
+                        <h1 class="text-xl mb-4 font-bold text-slate-500">Do you Want Delete</h1>
+                        <button class="bg-red-500 px-4 py-2 rounded-md text-md text-white"
+                            @click="show = !show">Cancel</button>
+                        <button class="bg-indigo-500 px-7 py-2 ml-2 rounded-md text-md text-white font-semibold"
+                            @click="deleteDataSupplier(supplierId)">Ok</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -95,7 +105,7 @@ export default {
         IconDelete
     },
     data: () => {
-        return { data: [] }
+        return { data: [], show: false, supplierId: '' }
     },
     created() {
         this.getSupplier()
@@ -110,20 +120,30 @@ export default {
                 },
                 params: {
                     offset: 0,
-                    limit: 10,
+                    limit: 15,
                 }
             })
+            console.log(data.data)
             this.data = await data.data
         },
 
         async deleteDataSupplier(id) {
-            await axios.delete("http://159.223.57.121:8090/supplier/delete" + id, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-        }
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+            await axios.delete(`http://159.223.57.121:8090/supplier/delete/${id}`, { headers })
+                .then(({ data }) => {
+                    if (data.message !== "Data Berhasil di Hapus" && data.status !== "Ok") {
+                        alert(data.message)
+                    } else {
+                        let item = this.data.map(data => data.id).indexOf(id);
+                        this.data.splice(item, 1)
+                        this.show = false
+                        this.getSupplier()
+                    }
+                })
+        },
     }
 }
 </script>

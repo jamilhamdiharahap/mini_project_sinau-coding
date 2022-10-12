@@ -40,18 +40,18 @@ export default {
         }
     },
     created() {
-
+        // this.postSupplier()
     },
     methods: {
         postSupplier() {
-            const data = axios.post("http://159.223.57.121:8090/supplier/create", {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                },
-                body: this.form
-            })
-            console.log(data.data)
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+            axios.post("http://159.223.57.121:8090/supplier/create", this.form, { headers }).
+                then(data => {
+                    console.log(data)
+                })
         }
 
     }

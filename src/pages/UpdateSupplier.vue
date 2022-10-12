@@ -3,7 +3,7 @@
         <div class=" bg-white shadow-lg max-w-xl w-full rounded">
             <div class="py-4">
                 <h1 class="bg-blue-200 p-2 px-4 font-bold text-blue-500">Update Supplier</h1>
-                <form action="" @submit.prevent="postSupplier()">
+                <form action="" @submit.prevent="supplierUpdate()">
                     <div class="flex flex-row items-center gap-4 py-4 px-4">
                         <div class="flex flex-col gap-8">
                             <label for="">Nama Supplier</label>
@@ -40,10 +40,38 @@ export default {
         }
     },
     created() {
-
+        this.supplierById()
     },
     methods: {
+        async supplierById() {
+            const id = this.$route.params.id;
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+            await axios.get(`http://159.223.57.121:8090/supplier/find-by-id/${id}`, { headers })
+                .then(({ data }) => {
+                    if (data.status !== "OK" && data) {
+                        alert("Data not found")
+                    } else {
+                        this.form.alamat = data.data.alamat
+                        this.form.namaSupplier = data.data.namaSupplier
+                        this.form.noTelp = data.data.noTelp
+                    }
+                })
+        },
 
+        async supplierUpdate() {
+            const id = this.$route.params.id;
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+            await axios.put(`http://159.223.57.121:8090/supplier/update/${id}`, this.form, { headers })
+                .then(({ data }) => {
+                    this.$router.push("/supplier")
+                })
+        }
     }
 
 }

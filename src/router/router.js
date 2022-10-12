@@ -45,7 +45,7 @@ const routes = [
     component: UpdateBarang,
   },
   {
-    path: "/update-supplier",
+    path: "/update-supplier/:id",
     name: "UpdateSupplier",
     component: UpdateSupplier,
   },

@@ -38,40 +38,42 @@
     </div>
 </template>
 <script>
+import axios from "axios"
 export default {
     data: () => {
         return {
-            form
-                : { namaBarang: '', harga: '', stok: '', supplier: '' }
+            form: { namaBarang: '', harga: '', stok: '', supplier: '' },
+            items: []
         }
     },
     created() {
-
+        this.getSupplier()
     },
     methods: {
         async postBarang() {
-            const { data } = axios.post("http://159.223.57.121:8090/barang/create", {
+            axios.post("http://159.223.57.121:8090/barang/create", {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 },
                 body: this.form
+            }).then(data => {
+                console.log(data)
             })
         },
         async getSupplier() {
-            const { data } = await axios.get("http://159.223.57.121:8090/barang/find-all", {
+            const { data } = await axios.get("http://159.223.57.121:8090/supplier/find-all", {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 },
                 params: {
                     offset: 0,
-                    limit: 15,
+                    limit: 100,
                 }
             })
-            console.log(data.data)
-            this.result = await data.data
-        }
+            this.items = await data.data
+        },
     }
 
 }

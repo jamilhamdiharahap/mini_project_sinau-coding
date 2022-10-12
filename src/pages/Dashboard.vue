@@ -62,8 +62,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item) in result" :key="item.id" class="md:text-md">
-                            <td class="border md:p-2 p-1 border-slate-700 text-xs">{{item.id }}</td>
+                        <tr v-for="(item,index) in result" :key="item.id" class="md:text-md">
+                            <td class="border md:p-2 p-1 border-slate-700">{{index+1 }}</td>
                             <td class="border md:p-2 p-1 border-slate-700">{{ item.namaBarang }}</td>
                             <td class="border md:p-2 p-1 border-slate-700">{{ item.stok }}</td>
                             <td class="border md:p-2 p-1 border-slate-700">{{ item.harga }}</td>
@@ -73,7 +73,7 @@
                             <td class="border md:p-2 p-1 border-slate-700">
                                 <div class="flex items-center justify-around">
                                     <button class="md:p-1 md:px-3 px-1 border border-red-500 rounded-sm"
-                                        @click="deleteData(item.id)">
+                                        @click="`${barangId = item.id}${show = !show}`">
                                         <IconDelete />
                                     </button>
                                     <router-link class="md:p-1 md:px-3 px-1 border border-yellow-500 rounded-sm"
@@ -85,6 +85,16 @@
                         </tr>
                     </tbody>
                 </table>
+                <div v-if="show"
+                    class="bg-slate-800 bg-opacity-50 flex justify-center items-center  fixed top-0 right-0 bottom-0 left-0">
+                    <div class="bg-white px-16 py-14 rounded-md text-center">
+                        <h1 class="text-xl mb-4 font-bold text-slate-500">Do you Want Delete</h1>
+                        <button class="bg-red-500 px-4 py-2 rounded-md text-md text-white"
+                            @click="show = !show">Cancel</button>
+                        <button class="bg-indigo-500 px-7 py-2 ml-2 rounded-md text-md text-white font-semibold"
+                            @click="deleteDataBarang(barangId)">Ok</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -100,11 +110,10 @@ export default {
         IconDelete
     },
     data: () => {
-        return { result: [] }
+        return { result: [], show: false }
     },
     created() {
         this.getBarang()
-        this.deleteData()
     },
 
     methods: {
@@ -116,18 +125,31 @@ export default {
                 },
                 params: {
                     offset: 0,
-                    limit: 10,
+                    limit: 15,
                 }
             })
             this.result = await data.data
         },
-        async deleteData(id) {
-            await axios.delete("http://159.223.57.121:8090/barang/delete/" + id, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                }
-            })
+        async deleteDataBarang(id) {
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+            try {
+                await axios.delete("http://159.223.57.121:8090/barang/delete/" + id, { headers })
+                    .then(({ data }) => {
+                        if (data.message !== "Data Berhasil di Hapus" && data.status !== "Ok") {
+                            alert(data.message)
+                        } else {
+                            let item = this.result.map(data => data.id).indexOf(id);
+                            this.result.splice(item, 1)
+                            this.show = false
+                            this.getBarang()
+                        }
+                    });
+            } catch (error) {
+                console.log(error)
+            }
         }
     }
 }
