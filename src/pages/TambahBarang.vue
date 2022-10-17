@@ -18,9 +18,10 @@
                                 class="p-1 border border-blue-200 w-full rounded focus:outline-gray-300" type="text">
                             <input v-model="form.stok"
                                 class="p-1 border border-blue-200 w-full rounded focus:outline-gray-300" type="text">
-                            <select v-model="form.supplier"
-                                class="p-1 border border-blue-200 w-full rounded focus:outline-gray-300" type="text">
-                                <option v-for="item in items" :key="item.id" :value="item.id">{{ item.namaSupplier }}
+                            <select v-model="form.id"
+                                class="p-1 border border-blue-200 w-full rounded focus:outline-gray-300">
+                                <option v-for="item in items" :key="item.id" :value="item.id">{{ item.namaSupplier
+                                }}
                                 </option>
                             </select>
                         </div>
@@ -42,7 +43,7 @@ import axios from "axios"
 export default {
     data: () => {
         return {
-            form: { namaBarang: '', harga: '', stok: '', supplier: '' },
+            form: { namaBarang: '', harga: '', stok: '', id: '' },
             items: []
         }
     },
@@ -51,15 +52,15 @@ export default {
     },
     methods: {
         async postBarang() {
-            axios.post("http://159.223.57.121:8090/barang/create", {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                },
-                body: this.form
-            }).then(data => {
-                console.log(data)
-            })
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+            await axios.post("http://159.223.57.121:8090/barang/create", this.form, { headers })
+                .then(({ data }) => {
+                    console.log(data)
+                    this.$router.push("/dashboard")
+                })
         },
         async getSupplier() {
             const { data } = await axios.get("http://159.223.57.121:8090/supplier/find-all", {

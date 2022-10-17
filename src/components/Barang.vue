@@ -3,16 +3,16 @@
         <div class="bg-blue-200">
             <h1 class="p-2 text-blue-500 font-medium">Dashboard</h1>
         </div>
-        <div class="flex flex-row justify-between items-center px-3 py-2">
+        <div class="md:flex md:flex-row md:justify-between items-center gap-3 md:gap-0 px-3 py-2">
             <h1 class="font-bold">Barang</h1>
-            <div class="flex items-center gap-2">
+            <div class="flex md:flex-wrap items-center gap-2">
                 <form @submit.prevent="searchBarang()" class="flex border border-blue-200 rounded">
-                    <input type="text" v-model="form.params" class="p-1 w-full rounded focus:outline-gray-300">
+                    <input type="text" v-model="form.params" class="p-1 md:w-full rounded focus:outline-gray-300">
                     <button type="submit" class="px-1 bg-lime-700">
                         <IconSearch />
                     </button>
                 </form>
-                <router-link class="bg-blue-500 p-1 text-white md:text-base text-sm font-semibold rounded"
+                <router-link class="bg-blue-500 p-1 text-white md:text-base text-xs font-semibold rounded"
                     to="/tambah-barang">Tambah
                     Barang
                 </router-link>

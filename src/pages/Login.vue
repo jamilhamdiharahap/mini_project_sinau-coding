@@ -16,20 +16,20 @@
                 <h1 class="p-2 text-center text-white font-bold text-lg">Login</h1>
             </div>
             <form action="" @submit.prevent="login()" class="flex flex-col p-4 gap-4">
-                <div class="bg-white border border-gray-500 rounded flex items-center">
+                <div class="bg-white border border-gray-500 rounded-sm flex items-center">
                     <div class="p-1  bg-gray-500">
                         <IconUser />
                     </div>
-                    <input v-model="form.username" class="p-1 w-full rounded focus:outline-gray-300" type="text">
+                    <input v-model="form.username" class="p-1 w-full rounded-sm focus:outline-gray-300" type="text">
                 </div>
                 <div class="bg-white border border-gray-500 rounded flex items-center">
                     <div class="p-1 bg-gray-500">
                         <IconLock />
                     </div>
-                    <input v-model="form.password" class="p-1 w-full rounded focus:outline-gray-300" type="password">
+                    <input v-model="form.password" class="p-1 w-full rounded-sm focus:outline-gray-300" type="password">
                 </div>
                 <div class="flex flex-col items-center">
-                    <button type="submit" class="bg-blue-500 px-2 py-1 shadow rounded text-white">Masuk</button>
+                    <button type="submit" class="bg-blue-500 px-2 py-1 shadow rounded-sm text-white">Masuk</button>
                     <router-link to="/register" class="text-blue-400 border-b border-blue-500">Belum Punya Akun
                     </router-link>
                 </div>
@@ -47,7 +47,6 @@ export default {
         IconLock,
         IconUser
     },
-
     data: () => {
         return { form: { username: '', password: '' } }
     },
@@ -64,7 +63,5 @@ export default {
             }
         }
     }
-
-
 }
 </script>

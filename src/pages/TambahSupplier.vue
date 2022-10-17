@@ -20,7 +20,7 @@
                         </div>
                     </div>
                     <div class="flex justify-between px-4">
-                        <router-link to="/supplier" class="bg-gray-500 p-1 px-2 rounded-sm font-semibold text-white">
+                        <router-link to="/dashboard" class="bg-gray-500 p-1 px-2 rounded-sm font-semibold text-white">
                             Kembali
                         </router-link>
                         <button type="submit"
@@ -50,7 +50,7 @@ export default {
             }
             axios.post("http://159.223.57.121:8090/supplier/create", this.form, { headers }).
                 then(data => {
-                    console.log(data)
+                    this.$router.push("/supplier")
                 })
         }
 

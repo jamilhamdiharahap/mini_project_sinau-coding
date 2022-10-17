@@ -3,9 +3,8 @@
         <div class=" bg-white shadow-lg max-w-xl w-full rounded">
             <div class="py-4">
                 <h1 class="bg-blue-200 p-2 px-4 font-bold text-blue-500">Update Barang</h1>
-                <form action="">
+                <form action="" @submit.prevent="barangUpdate()">
                     <div class="flex flex-row items-center gap-4 py-4 px-4">
-
                         <div class="flex flex-col gap-8">
                             <label for="">Nama Barang</label>
                             <label for="">Harga Barang</label>
@@ -21,7 +20,9 @@
                                 class="p-1 border border-blue-200 w-full rounded focus:outline-gray-300" type="text">
                             <select v-model="form.namaSupplier"
                                 class="p-1 border border-blue-200 w-full rounded focus:outline-gray-300" type="text">
-                                <option v-for="item in items" :key="item.id" :value="item.id">{{ item.namaSupplier }}
+                                <option value="" selected="true" disabled="disabled">{{ name }}</option>
+                                <option v-for="item in items" :key="item.id" :value="item.id">
+                                    {{ item.namaSupplier }}
                                 </option>
                             </select>
                         </div>
@@ -42,7 +43,12 @@
 import axios from "axios"
 export default {
     data: () => {
-        return { items: [], form: { namaBarang: '', harga: '', stok: '', namaSupplier: '' } }
+        return {
+            items: [],
+            form: { namaBarang: '', harga: '', stok: '', namaSupplier: '' },
+            name: '',
+            id: ''
+        }
     },
     created() {
         this.findOneBarang()
@@ -62,6 +68,8 @@ export default {
                         input.namaBarang = data.data.namaBarang
                         input.harga = data.data.harga
                         input.stok = data.data.stok
+                        this.name = data.data?.supplier.namaSupplier
+                        this.id = data.data?.supplier.id
                     })
             } catch (error) {
                 console.log(error)
@@ -76,11 +84,23 @@ export default {
                 },
                 params: {
                     offset: 0,
-                    limit: 100,
+                    limit: 15,
                 }
             })
             this.items = await data.data
         },
+
+        async barangUpdate() {
+            const id = this.$route.params.id;
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+            await axios.put(`http://159.223.57.121:8090/barang/update/${id}`, this.form, { headers })
+                .then(({ data }) => {
+                    this.$router.push("/dashboard")
+                })
+        }
     }
 
 }
